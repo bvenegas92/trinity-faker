@@ -1,0 +1,11 @@
+{
+	"name": "bvenegas92/trinity-faker",
+    "require": {
+        "illuminate/database": "^5.1"
+    },
+    "autoload": {
+		"psr-4":{
+			"Trinity\\Faker": ""
+		}
+	}
+}
