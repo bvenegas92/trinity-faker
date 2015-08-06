@@ -31,8 +31,8 @@ class Carrera extends Model{
 
 	public static function crearCarreras(){
 		foreach (self::$carreras as $clave => $nombre) {
-			$carrera = self::create(array('clave' => $clave, 'nombre' => $nombre));
-			echo "Carrera ".substr($carrera->nombre, 0, 15)."... creada\n";
+			if(self::where('nombre','=',$nombre)->get()->isEmpty())
+				$carrera = self::create(array('clave' => $clave, 'nombre' => $nombre));
 		}
 	}
 }

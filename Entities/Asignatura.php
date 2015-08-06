@@ -11,6 +11,11 @@ class Asignatura extends Model{
 
 	public $guarded = array('id');
 
+	public function calificaciones(){
+		return $this->belongsToMany('Trinity\Faker\Entities\Alumno', 'calificaciones', 'asignatura_id', 'alumno_id')
+						->withPivot('corte_1', 'corte_2', 'corte_3');
+	}
+
 	public function carreras(){
 		return $this->belongsToMany('Trinity\Faker\Entities\Carrera', 'asignaturas_carreras', 'asignatura_id', 'carrera_id')
 						->withPivot('cuatrimestre', 'horas_semana');
@@ -43,8 +48,10 @@ class Asignatura extends Model{
 				$num_asign = 0;
 				foreach ($cuatrimestre as $asignatura) {
 					$asign = self::where('nombre','=',$asignatura)->get()->first();
-					$carrera->asignaturas()->attach($asign->id, array('cuatrimestre' => $num_cuatri, 'horas_semana' => $horas_repartidas[$num_asign]));
-					echo "Carrera: ".$carrera->clave." - Asig: ".substr($asign->nombre, 0, 15)." - Hrs: ".$horas_repartidas[$num_asign]."\n";
+					$existe = !$carrera->asignaturas()->where('id','=',$asign->id)->get()->isEmpty();
+					if(!$existe){
+						$carrera->asignaturas()->attach($asign->id, array('cuatrimestre' => $num_cuatri, 'horas_semana' => $horas_repartidas[$num_asign]));
+					}
 					$num_asign++;
 				}
 			}
@@ -57,7 +64,6 @@ class Asignatura extends Model{
 				foreach ($cuatrimestre as $asignatura) {
 					if(self::where('nombre','=',$asignatura)->get()->isEmpty()){
 						$asignatura = self::create(array('nombre' => $asignatura));
-						echo "Asignatura: ".substr($asignatura->nombre, 0, 15)."... creada\n";
 					}
 				}
 			}

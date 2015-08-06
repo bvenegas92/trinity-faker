@@ -16,9 +16,8 @@ class Horario extends Model{
 		return $this->hasMany('Trinity\Faker\Entities\Clase', 'horario_id');
 	}
 
-	public static function seleccionarPorProfesor($profesor_id, $horas_semana){
-		//echo "Seleccionando horarios por profesor id:".$profesor_id."\n";
-		$ciclo = Ciclo::all()->last();
+	public static function seleccionarPorProfesor($profesor_id, $horas_semana, $ciclo_id){
+		$ciclo = Ciclo::find($ciclo_id);
 		$horarios_gral = Horario::all();
 		$horarios_ocupados = Horario::select('horarios.*')
 									->distinct()
@@ -34,20 +33,22 @@ class Horario extends Model{
 	public static function crearHorarios(){
 		for($i = 0; $i < 5; $i++){
 			for($j = 7; $j < 16; $j++){
-				self::create(array(
-					'hora_inicio' => ($j < 10 ? '0'.$j : $j).':00:00',
-					'hora_fin' => ($j < 10 ? '0'.$j : $j).':50:00',
-					'dia' => self::$dias[$i]
-				));
-				echo 'Horario '.self::$dias[$i]." ".($j < 10 ? '0'.$j : $j).":00 - ".($j < 10 ? '0'.$j : $j).":50 creado\n";
+				$existe = !self::where('dia','=',self::$dias[$i])
+								->where('hora_inicio','=',($j < 10 ? '0'.$j : $j).':00:00')
+								->where('hora_fin','=',($j < 10 ? '0'.$j : $j).':50:00')
+								->get()->isEmpty();
+				if(!$existe){
+					self::create(array(
+						'hora_inicio' => ($j < 10 ? '0'.$j : $j).':00:00',
+						'hora_fin' => ($j < 10 ? '0'.$j : $j).':50:00',
+						'dia' => self::$dias[$i]
+					));
+				}
 			}
 		}
 	}
 
 	public static function organizarSemana($horarios, $cant){
-		//echo "Organizando semana\n";
-		//print_r('horas: '.$cant);
-		//print_r($horarios->toArray());
 		$semana = new Collection;
 		while($cant > 0){
 			for($i = 0; $i < 5 && $cant > 0; $i++){

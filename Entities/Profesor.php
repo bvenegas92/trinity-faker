@@ -19,9 +19,8 @@ class Profesor extends Model{
 		return $this->hasMany('Trinity\Faker\Entities\Clase', 'profesor_id');
 	}
 
-	public static function disponible($horas_semana, $asignatura_id){
-		//echo "Obteniendo profesor disponible\n";
-		$ciclo = Ciclo::all()->last();
+	public static function disponible($horas_semana, $asignatura_id, $ciclo_id){
+		$ciclo = Ciclo::find($ciclo_id);
 		$asignatura = Asignatura::find($asignatura_id);
 		$profesores_disponibles = self::whereHas('clases', function($q) use ($ciclo){
 									$q->whereHas('grupo', function($q) use ($ciclo){
@@ -33,7 +32,6 @@ class Profesor extends Model{
 								})
 								->get();
 		if($profesores_disponibles->count() > 0){
-			//echo "Profesor disponible\n";
 			return $profesores_disponibles->random();
 		}
 
@@ -50,18 +48,15 @@ class Profesor extends Model{
 		if($profesores_capacitables->count() > 0){
 			$profesor = $profesores_capacitables->random();
 			$profesor->asignaturas()->attach($asignatura->id);
-			//echo "Profesor capacitado\n";
 			return $profesor;
 		}
 
 		$profesor = self::crearProfesor();
-		//echo 'Profesor '.$profesor->nombre." creado\n";
 		$profesor->asignaturas()->attach($asignatura->id);
 		return $profesor;
 	}
 
 	public static function crearProfesor(){
-		//echo "Creando profesor\n";
 		$genero = rand(0,1) ? "H" : "M";
 		$nombre = Alumno::randomNombre($genero).(rand(0,1) ? " ".Alumno::randomNombre($genero) : "");
 		$apellido_paterno = Alumno::randomApellido();

@@ -12,14 +12,16 @@ class Alumno extends Model{
 
 	public $guarded = array('id');
 
+	public function calificaciones(){
+		return $this->belongsToMany('Trinity\Faker\Entities\Asignatura', 'calificaciones', 'alumno_id', 'asignatura_id')
+						->withPivot('corte_1', 'corte_2', 'corte_3');
+	}
+
 	public function grupos(){
 		return $this->belongsToMany('Trinity\Faker\Entities\Grupo', 'alumnos_grupos', 'alumno_id', 'grupo_id');
 	}
 
-	public static function crearAlumno($carrera_id){
-		$ciclo = Ciclo::all()->last();
-		$year = new DateTime($ciclo->fecha_inicio);
-		$year = intval($year->format('Y'));
+	public static function crearAlumno($carrera_id, $year){
 		$genero = rand(0,1) ? "H" : "M";
 		$nombre = self::randomNombre($genero).(rand(0,1) ? " ".self::randomNombre($genero) : "");
 		$apellido_paterno = self::randomApellido();

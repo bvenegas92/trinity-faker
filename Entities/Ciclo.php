@@ -17,7 +17,7 @@ class Ciclo extends Model{
 		$ultimo_ciclo = self::all()->last();
 		if($ultimo_ciclo == null){
 			$ciclo = self::create(array(
-				'nombre' => 'ENE-2010 - ABR-2010',
+				'nombre' => 'SEP-2010 - DIC-2010',
 				'fecha_inicio' => '2010-01-01',
 				'fecha_fin' => '2010-04-28'
 			));
@@ -28,7 +28,7 @@ class Ciclo extends Model{
 			$inicio->add(new DateInterval('P4M'));
 			$fin->add(new DateInterval('P4M'));
 
-			$meses = array('ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP' ,'OCT', 'NOV', 'DIV');
+			$meses = array('ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP' ,'OCT', 'NOV', 'DIC');
 
 			$ciclo = self::create(array(
 				'nombre' => $meses[intval($inicio->format('m'))-1].'-'.$inicio->format('Y').' - '.$meses[intval($fin->format('m'))-1].'-'.$fin->format('Y'),
@@ -36,6 +36,5 @@ class Ciclo extends Model{
 				'fecha_fin' => $fin->format('Y-m-d')
 			));
 		}
-		echo 'Ciclo '.$ciclo->nombre." creado\n";
 	}
 }

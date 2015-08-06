@@ -37,8 +37,6 @@ CREATE TABLE `alumnos` (
   CONSTRAINT `fk_alumnos_carrera_id` FOREIGN KEY (`carrera_id`) REFERENCES `carreras` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-/*Data for the table `alumnos` */
-
 /*Table structure for table `alumnos_grupos` */
 
 DROP TABLE IF EXISTS `alumnos_grupos`;
@@ -52,8 +50,6 @@ CREATE TABLE `alumnos_grupos` (
   CONSTRAINT `fk_alumnos_grupos_grupo_id` FOREIGN KEY (`grupo_id`) REFERENCES `grupos` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-/*Data for the table `alumnos_grupos` */
-
 /*Table structure for table `asignaturas` */
 
 DROP TABLE IF EXISTS `asignaturas`;
@@ -63,8 +59,6 @@ CREATE TABLE `asignaturas` (
   `nombre` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-/*Data for the table `asignaturas` */
 
 /*Table structure for table `asignaturas_carreras` */
 
@@ -81,8 +75,6 @@ CREATE TABLE `asignaturas_carreras` (
   CONSTRAINT `fk_asignaturas_carreras_carrera_id` FOREIGN KEY (`carrera_id`) REFERENCES `carreras` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-/*Data for the table `asignaturas_carreras` */
-
 /*Table structure for table `asignaturas_profesores` */
 
 DROP TABLE IF EXISTS `asignaturas_profesores`;
@@ -96,8 +88,6 @@ CREATE TABLE `asignaturas_profesores` (
   CONSTRAINT `fk_asignaturas_profesores_profesor_id` FOREIGN KEY (`profesor_id`) REFERENCES `profesores` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-/*Data for the table `asignaturas_profesores` */
-
 /*Table structure for table `aulas` */
 
 DROP TABLE IF EXISTS `aulas`;
@@ -108,28 +98,21 @@ CREATE TABLE `aulas` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-/*Data for the table `aulas` */
-
 /*Table structure for table `calificaciones` */
 
 DROP TABLE IF EXISTS `calificaciones`;
 
 CREATE TABLE `calificaciones` (
   `alumno_id` int(10) unsigned NOT NULL,
-  `grupo_id` int(10) unsigned NOT NULL,
   `asignatura_id` int(10) unsigned NOT NULL,
   `corte_1` float DEFAULT NULL,
   `corte_2` float DEFAULT NULL,
   `corte_3` float DEFAULT NULL,
-  PRIMARY KEY (`alumno_id`,`grupo_id`,`asignatura_id`),
-  KEY `fk_calificaciones_grupo_id` (`grupo_id`),
+  PRIMARY KEY (`alumno_id`,`asignatura_id`),
   KEY `fk_calificaciones_asignatura_id` (`asignatura_id`),
   CONSTRAINT `fk_calificaciones_alumno_id` FOREIGN KEY (`alumno_id`) REFERENCES `alumnos` (`id`),
-  CONSTRAINT `fk_calificaciones_asignatura_id` FOREIGN KEY (`asignatura_id`) REFERENCES `asignaturas` (`id`),
-  CONSTRAINT `fk_calificaciones_grupo_id` FOREIGN KEY (`grupo_id`) REFERENCES `grupos` (`id`)
+  CONSTRAINT `fk_calificaciones_asignatura_id` FOREIGN KEY (`asignatura_id`) REFERENCES `asignaturas` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-/*Data for the table `calificaciones` */
 
 /*Table structure for table `carreras` */
 
@@ -143,8 +126,6 @@ CREATE TABLE `carreras` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-/*Data for the table `carreras` */
-
 /*Table structure for table `ciclos` */
 
 DROP TABLE IF EXISTS `ciclos`;
@@ -156,8 +137,6 @@ CREATE TABLE `ciclos` (
   `fecha_fin` date NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-/*Data for the table `ciclos` */
 
 /*Table structure for table `clases` */
 
@@ -183,8 +162,6 @@ CREATE TABLE `clases` (
   CONSTRAINT `fk_clases_profesor_id` FOREIGN KEY (`profesor_id`) REFERENCES `profesores` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-/*Data for the table `clases` */
-
 /*Table structure for table `grupos` */
 
 DROP TABLE IF EXISTS `grupos`;
@@ -202,8 +179,6 @@ CREATE TABLE `grupos` (
   CONSTRAINT `fk_grupos_ciclo_id` FOREIGN KEY (`ciclo_id`) REFERENCES `ciclos` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-/*Data for the table `grupos` */
-
 /*Table structure for table `horarios` */
 
 DROP TABLE IF EXISTS `horarios`;
@@ -215,8 +190,6 @@ CREATE TABLE `horarios` (
   `dia` varchar(10) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-/*Data for the table `horarios` */
 
 /*Table structure for table `profesores` */
 
@@ -234,8 +207,6 @@ CREATE TABLE `profesores` (
   `estado` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-/*Data for the table `profesores` */
 
 /*Table structure for table `horario_clases` */
 
