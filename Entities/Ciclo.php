@@ -18,8 +18,8 @@ class Ciclo extends Model{
 		if($ultimo_ciclo == null){
 			$ciclo = self::create(array(
 				'nombre' => 'SEP-2010 - DIC-2010',
-				'fecha_inicio' => '2010-01-01',
-				'fecha_fin' => '2010-04-28'
+				'fecha_inicio' => '2010-09-01',
+				'fecha_fin' => '2010-12-20'
 			));
 		}
 		else{

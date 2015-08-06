@@ -57,7 +57,7 @@ class Faker{
 		echo "\nGenerando cuatrimestre...";
 		if(Ciclo::all()->count() > 0){
 			$ciclo_anterior = Ciclo::all()->last();
-			//$this->publicarCalificaciones($ciclo_anterior->id);
+			$this->publicarCalificaciones($ciclo_anterior->id);
 		}
 
 		$this->publicarCiclo();
@@ -126,8 +126,6 @@ class Faker{
 		$ciclo = Ciclo::find($ciclo_id);
 		$grupos = Grupo::where('ciclo_id','=',$ciclo->id)
 						->get();
-
-		$num = 0;
 		foreach ($grupos as $grupo) {
 			$asignaturas = Asignatura::with(array('carreras' => function($q) use ($grupo){
 									$q->where('carrera_id','=',$grupo->carrera_id);
@@ -147,8 +145,6 @@ class Faker{
 					$corte_2 = min(10, rand(7,10)+(rand(0,9)/10));
 					$corte_3 = min(10, rand(7,10)+(rand(0,9)/10));
 					$alumno->calificaciones()->attach($asignatura->id, array('corte_1' => $corte_1, 'corte_2' => $corte_2, 'corte_3' => $corte_3));
-					$num++;
-					echo 'Calif '.$num."\n";
 				}
 			}
 		}
@@ -167,11 +163,18 @@ class Faker{
 
 $faker = new Faker;
 
-/*********** catalogos obligatorios **************/
+/****************************************************/
+/***************     ADVERTENCIA     ****************/
+/****  PUEDE DURAR VARIOS MINUTOS INCLUSO HORAS  ****/
+/****  DEPENDIENDO DE LA CANTIDAD DE INFORMACION  ***/
+/****************************************************/
+
+
+/******************   CATALOGOS   *******************/
 $faker->generarCatalogos();
 
-/*********** generar nuevo cuatrimestre ***************/
+/**********   GENERAR NUEVO CUATRIMESTRE   **********/
 $faker->generarNuevoCuatrimestre();
 
-/*********** generar nueva generacion ****************/
+/**********   GENERAR NUEVAS GENERACIONES   *********/
 //$faker->generarNuevaGeneracion();
