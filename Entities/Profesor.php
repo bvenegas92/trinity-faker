@@ -19,32 +19,34 @@ class Profesor extends Model{
 		return $this->hasMany('Trinity\Faker\Entities\Clase', 'profesor_id');
 	}
 
-	public static function disponible($horas_semana, $asignatura_id, $ciclo_id){
+	public static function disponible($horarios, $asignatura_id, $ciclo_id, $horas){
 		$ciclo = Ciclo::find($ciclo_id);
 		$asignatura = Asignatura::find($asignatura_id);
-		$profesores_disponibles = self::whereHas('clases', function($q) use ($ciclo){
-									$q->whereHas('grupo', function($q) use ($ciclo){
-										$q->where('ciclo_id','=',$ciclo->id);
-									});
-								},'<=', 30-$horas_semana)
-								->whereHas('asignaturas', function($q) use ($asignatura){
-									$q->where('asignatura_id','=',$asignatura->id);
-								})
-								->get();
+		$profesores_disponibles = self::whereHas('clases', function($q) use ($ciclo_id, $horarios){
+											$q->whereHas('grupo', function($q) use ($ciclo_id){
+												$q->where('ciclo_id','=',$ciclo_id);
+											})
+											->whereIn('horario_id', array_fetch($horarios->toArray(), 'id'));
+										}, '<=', $horarios->count()-$horas)
+										->whereHas('asignaturas', function($q) use ($asignatura){
+											$q->where('asignatura_id','=',$asignatura->id);
+										})
+										->get();
 		if($profesores_disponibles->count() > 0){
 			return $profesores_disponibles->random();
 		}
 
-		$profesores_capacitables = Profesor::whereHas('clases', function($q) use ($ciclo){
-											$q->whereHas('grupo', function($q) use ($ciclo){
-												$q->where('ciclo_id','=',$ciclo->id);
-											});
-										},'<=', 30-$horas_semana)
-										->whereDoesntHave('asignaturas', function($q) use ($asignatura){
-											$q->where('asignatura_id','=',$asignatura->id);
-										})
-										->has('asignaturas','<',10)
-										->get();
+		$profesores_capacitables = Profesor::whereHas('clases', function($q) use ($ciclo_id, $horarios){
+												$q->whereHas('grupo', function($q) use ($ciclo_id){
+													$q->where('ciclo_id','=',$ciclo_id);
+												})
+												->whereIn('horario_id', array_fetch($horarios->toArray(), 'id'));
+											}, '<=', $horarios->count()-$horas)
+											->whereDoesntHave('asignaturas', function($q) use ($asignatura){
+												$q->where('asignatura_id','=',$asignatura->id);
+											})
+											->has('asignaturas','<',10)
+											->get();
 		if($profesores_capacitables->count() > 0){
 			$profesor = $profesores_capacitables->random();
 			$profesor->asignaturas()->attach($asignatura->id);

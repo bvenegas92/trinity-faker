@@ -41,8 +41,14 @@ class Clase extends Model{
 		foreach($asignaturas as $asignatura){
 			$horas_semana = $asignatura->carreras->first()->pivot->horas_semana;
 
-			$profesor = Profesor::disponible($horas_semana, $asignatura->id, $ciclo_id);
-			$horarios_seleccionados = Horario::seleccionarPorProfesor($profesor->id, $horas_semana, $ciclo_id);
+			$horarios_disponibles = Horario::whereDoesntHave('clases', function($q) use ($grupo){
+												$q->where('grupo_id','=',$grupo->id);
+											})->get();
+
+			$profesor = Profesor::disponible($horarios_disponibles, $asignatura->id, $ciclo_id, $horas_semana);
+
+			$horarios_seleccionados = Horario::organizarSemana($horarios_disponibles, $profesor->id, $horas_semana, $ciclo_id);
+
 			foreach ($horarios_seleccionados as $horario) {
 				$aula = Aula::disponible($horario->id, $ciclo_id);
 				$clase = Clase::create(array(

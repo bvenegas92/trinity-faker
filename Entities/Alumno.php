@@ -84,7 +84,7 @@ class Alumno extends Model{
 
 		//homoclave
 		for($i = 65; $i <= 90; $i++){
-			if(Alumno::where('curp','like','%'.strtoupper($curp.chr($i)).'%')->get()->isEmpty()){
+			if(Alumno::where('curp','like','%'.strtoupper($curp.chr($i)).'%')->get()->isEmpty() && Profesor::where('curp','like','%'.strtoupper($curp.chr($i)).'%')->get()->isEmpty()){
 				$curp .= chr($i);
 				break;
 			}

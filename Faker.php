@@ -115,6 +115,9 @@ class Faker{
 		echo "\nGenerando clases...";
 		$ciclo = Ciclo::find($ciclo_id);
 		$grupos = Grupo::where('ciclo_id','=',$ciclo->id)
+						->orderBy('cuatrimestre')
+						->orderBy('carrera_id')
+						->orderBy('nombre')
 						->get();
 		foreach ($grupos as $grupo) {
 			Clase::crearClases($grupo->id, $ciclo_id);
@@ -126,6 +129,7 @@ class Faker{
 		$ciclo = Ciclo::find($ciclo_id);
 		$grupos = Grupo::where('ciclo_id','=',$ciclo->id)
 						->get();
+						
 		foreach ($grupos as $grupo) {
 			$asignaturas = Asignatura::with(array('carreras' => function($q) use ($grupo){
 									$q->where('carrera_id','=',$grupo->carrera_id);
