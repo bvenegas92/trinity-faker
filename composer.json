@@ -1,7 +1,7 @@
 {
 	"name": "bvenegas92/trinity-faker",
     "require": {
-        "illuminate/database": "^5.1"
+        "illuminate/database": "^5.0"
     },
     "autoload": {
 		"psr-4":{

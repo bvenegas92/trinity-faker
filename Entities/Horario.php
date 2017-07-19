@@ -4,7 +4,8 @@ namespace Trinity\Faker\Entities;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
 
-class Horario extends Model{
+class Horario extends Model
+{
 
 	protected $table = 'horarios';
 
@@ -12,56 +13,12 @@ class Horario extends Model{
 
 	public $guarded = array('id');
 
-	public function clases(){
+	/**
+	 * Relacion con clases
+	 * @return HasMany
+	 */
+	public function clases()
+	{
 		return $this->hasMany('Trinity\Faker\Entities\Clase', 'horario_id');
 	}
-
-	public static function crearHorarios(){
-		for($i = 0; $i < 5; $i++){
-			for($j = 7; $j < 16; $j++){
-				$existe = !self::where('dia','=',self::$dias[$i])
-								->where('hora_inicio','=',($j < 10 ? '0'.$j : $j).':00:00')
-								->where('hora_fin','=',($j < 10 ? '0'.$j : $j).':50:00')
-								->get()->isEmpty();
-				if(!$existe){
-					self::create(array(
-						'hora_inicio' => ($j < 10 ? '0'.$j : $j).':00:00',
-						'hora_fin' => ($j < 10 ? '0'.$j : $j).':50:00',
-						'dia' => self::$dias[$i]
-					));
-				}
-			}
-		}
-	}
-
-	public static function organizarSemana($horarios_disponibles, $profesor_id, $cant, $ciclo_id){
-		$ciclo = Ciclo::find($ciclo_id);
-		$horarios_gral = Horario::all();
-		$horarios_ocupados = Horario::select('horarios.*')
-									->distinct()
-									->join('clases','clases.horario_id','=','horarios.id')
-									->join('grupos','grupos.id','=','clases.grupo_id')
-									->where('profesor_id','=',$profesor_id)
-									->where('ciclo_id','=',$ciclo->id)
-									->get();
-		$horarios_profesor = $horarios_gral->diff($horarios_ocupados);
-
-		$horarios = $horarios_disponibles->intersect($horarios_profesor);
-
-		$semana = new Collection;
-		while($cant > 0){
-			for($i = 0; $i < 5 && $cant > 0; $i++){
-				foreach ($horarios as $key => $horario) {
-					if($horario->dia == Horario::$dias[$i]){
-						$semana->push($horarios->pull($key));
-						$cant--;
-						break;
-					}
-				}
-			}
-		}
-		return $semana;
-	}
-
-	public static $dias = array('LUNES', 'MARTES', 'MIERCOLES', 'JUEVES', 'VIERNES');
 }

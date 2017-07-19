@@ -1,6 +1,6 @@
 /*
-SQLyog Community v12.12 (64 bit)
-MySQL - 5.6.24 : Database - trinity
+SQLyog Community v12.2.4 (64 bit)
+MySQL - 5.5.39 : Database - trinity
 *********************************************************************
 */
 
@@ -22,7 +22,7 @@ DROP TABLE IF EXISTS `alumnos`;
 
 CREATE TABLE `alumnos` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `matricula` varchar(16) COLLATE utf8_unicode_ci NOT NULL,
+  `matricula` varchar(8) COLLATE utf8_unicode_ci NOT NULL,
   `nombre` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   `apellido_paterno` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   `apellido_materno` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
@@ -35,7 +35,7 @@ CREATE TABLE `alumnos` (
   PRIMARY KEY (`id`),
   KEY `fk_alumnos_carrera_id` (`carrera_id`),
   CONSTRAINT `fk_alumnos_carrera_id` FOREIGN KEY (`carrera_id`) REFERENCES `carreras` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=837 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `alumnos_grupos` */
 
@@ -58,7 +58,7 @@ CREATE TABLE `asignaturas` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `nombre` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=404 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `asignaturas_carreras` */
 
@@ -96,7 +96,7 @@ CREATE TABLE `aulas` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `nombre` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=161 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `calificaciones` */
 
@@ -122,9 +122,8 @@ CREATE TABLE `carreras` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `nombre` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
   `clave` varchar(3) COLLATE utf8_unicode_ci NOT NULL,
-  `fecha_eliminacion` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `ciclos` */
 
@@ -136,7 +135,7 @@ CREATE TABLE `ciclos` (
   `fecha_inicio` date NOT NULL,
   `fecha_fin` date NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `clases` */
 
@@ -149,18 +148,21 @@ CREATE TABLE `clases` (
   `asignatura_id` int(10) unsigned NOT NULL,
   `aula_id` int(10) unsigned NOT NULL,
   `horario_id` int(10) unsigned NOT NULL,
+  `ciclo_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_clases_profesor_id` (`profesor_id`),
   KEY `fk_clases_grupo_id` (`grupo_id`),
   KEY `fk_clases_asignatura_id` (`asignatura_id`),
   KEY `fk_clases_aula_id` (`aula_id`),
   KEY `fk_clases_horario_id` (`horario_id`),
+  KEY `fk_clases_ciclo_id` (`ciclo_id`),
   CONSTRAINT `fk_clases_asignatura_id` FOREIGN KEY (`asignatura_id`) REFERENCES `asignaturas` (`id`),
   CONSTRAINT `fk_clases_aula_id` FOREIGN KEY (`aula_id`) REFERENCES `aulas` (`id`),
+  CONSTRAINT `fk_clases_ciclo_id` FOREIGN KEY (`ciclo_id`) REFERENCES `ciclos` (`id`),
   CONSTRAINT `fk_clases_grupo_id` FOREIGN KEY (`grupo_id`) REFERENCES `grupos` (`id`),
   CONSTRAINT `fk_clases_horario_id` FOREIGN KEY (`horario_id`) REFERENCES `horarios` (`id`),
   CONSTRAINT `fk_clases_profesor_id` FOREIGN KEY (`profesor_id`) REFERENCES `profesores` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1201 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `grupos` */
 
@@ -177,7 +179,7 @@ CREATE TABLE `grupos` (
   KEY `fk_grupos_ciclo_id` (`ciclo_id`),
   CONSTRAINT `fk_grupos_carrera_id` FOREIGN KEY (`carrera_id`) REFERENCES `carreras` (`id`),
   CONSTRAINT `fk_grupos_ciclo_id` FOREIGN KEY (`ciclo_id`) REFERENCES `ciclos` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `horarios` */
 
@@ -187,9 +189,9 @@ CREATE TABLE `horarios` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `hora_inicio` time NOT NULL,
   `hora_fin` time NOT NULL,
-  `dia` varchar(10) COLLATE utf8_unicode_ci NOT NULL,
+  `dia` int(10) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=46 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `profesores` */
 
@@ -206,7 +208,7 @@ CREATE TABLE `profesores` (
   `ciudad` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   `estado` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `horario_clases` */
 
@@ -225,7 +227,7 @@ DROP TABLE IF EXISTS `horario_clases`;
  `aula_id` int(10) unsigned ,
  `aula_nombre` varchar(20) ,
  `horario_id` int(10) unsigned ,
- `dia` varchar(10) ,
+ `dia` int(10) ,
  `hora_inicio` time ,
  `hora_fin` time 
 )*/;

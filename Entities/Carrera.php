@@ -2,37 +2,42 @@
 namespace Trinity\Faker\Entities;
 
 use Illuminate\Database\Eloquent\Model;
+use Trinity\Faker\Data\DummyData;
 
-class Carrera extends Model{
+class Carrera extends Model
+{
 
 	protected $table = 'carreras';
 
 	public $timestamps = false;
 
-	public $guarded = array('id', 'fecha_eliminacion');
+	public $guarded = array('id');
 
-	public function asignaturas(){
-		return $this->belongsToMany('Trinity\Faker\Entities\Asignatura', 'asignaturas_carreras', 'carrera_id', 'asignatura_id')
-						->withPivot('cuatrimestre', 'horas_semana');
+	/**
+	 * Relacion con alumnos
+	 * @return HasMany
+	 */
+	public function alumnos()
+	{
+		return $this->hasMany('Trinity\Faker\Entities\Carrera', 'carrera_id');
 	}
 
-	public static $carreras = array(
-		'TPF' => 'Licenciatura en Terapia Física',
-		'AGP' => 'Licenciatura en Administración y Gestión de PyMES',
-		'BIO' => 'Ingeniería en Biotecnología',
-		'INF' => 'Ingeniería en Informática',
-		'MEC' => 'Ingeniería Mecatrónica',
-		'ENE' => 'Ingeniería en Energía',
-		'LYT' => 'Ingeniería en Logistíca y Transporte',
-		'AMB' => 'Ingeniería en Tecnología Ambiental',
-		'BMD' => 'Ingeniería Biomédica',
-		'AEF' => 'Ingeniería en Animación y Efectos Visuales'
-	);
+	/**
+	 * Relacion con asignaturas
+	 * @return BelongsToMany
+	 */
+	public function asignaturas()
+	{
+		return $this->belongsToMany('Trinity\Faker\Entities\Asignatura', 'asignaturas_carreras', 'carrera_id', 'asignatura_id')
+			->withPivot('cuatrimestre', 'horas_semana');
+	}
 
-	public static function crearCarreras(){
-		foreach (self::$carreras as $clave => $nombre) {
-			if(self::where('nombre','=',$nombre)->get()->isEmpty())
-				$carrera = self::create(array('clave' => $clave, 'nombre' => $nombre));
-		}
+	/**
+	 * Relacion con grupos
+	 * @return HasMany
+	 */
+	public function grupos()
+	{
+		return $this->hasMany('Trinity\Faker\Entities\Grupo', 'carrera_id');
 	}
 }
